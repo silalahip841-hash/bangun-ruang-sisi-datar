@@ -372,4 +372,677 @@
       margin-top: 24px;
       display: flex;
       justify-content: space-between;
-      align-
+      align-items: center;
+    }
+
+    /* Layar Hasil */
+    .result-header {
+      text-align: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .score-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 14px;
+      box-shadow: 0 10px 20px rgba(30, 64, 175, 0.25);
+    }
+
+    .score-circle span {
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .score-circle small {
+      font-size: 0.78rem;
+      margin-top: 4px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .stat-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 1.3rem;
+    }
+
+    .stat-card span {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .review-list {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .review-item {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 0.9rem;
+    }
+
+    .review-item.is-correct { border-left: 4px solid var(--success); }
+    .review-item.is-wrong { border-left: 4px solid var(--danger); }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="header">
+      <div>
+        <h1>Kuis Matematika: Bangun Ruang Sisi Tegak</h1>
+        <p>SMP Kelas 9 &bull; Kubus, Balok, Prisma, dan Limas</p>
+      </div>
+      <div class="badge" id="headerBadge">20 Soal Evaluasi</div>
+    </div>
+
+    <!-- SCREEN 1: MULAI -->
+    <div class="content" id="startScreen">
+      <h2 style="font-size: 1.12rem;">Distribusi Tingkat Kesulitan Soal</h2>
+      <div class="info-grid">
+        <div class="info-box"><strong>5 Soal</strong><span>Mudah (Dasar)</span></div>
+        <div class="info-box"><strong>10 Soal</strong><span>Sedang (Aplikasi)</span></div>
+        <div class="info-box"><strong>3 Soal</strong><span>Kontekstual</span></div>
+        <div class="info-box"><strong>2 Soal</strong><span>HOTS (Penalaran)</span></div>
+      </div>
+
+      <h3 style="font-size: 1rem; margin-bottom: 10px;">Ringkasan Rumus Bangun Ruang Sisi Tegak</h3>
+      <div class="formula-cards">
+        <div class="formula-card">
+          <h3>Kubus (rusuk = s)</h3>
+          <ul>
+            <li>Panjang Rusuk = 12s</li>
+            <li>Luas Permukaan = 6s&sup2;</li>
+            <li>Volume = s&sup3;</li>
+          </ul>
+        </div>
+        <div class="formula-card">
+          <h3>Balok (p, l, t)</h3>
+          <ul>
+            <li>Panjang Rusuk = 4(p + l + t)</li>
+            <li>L. Permukaan = 2(pl + pt + lt)</li>
+            <li>Volume = p &times; l &times; t</li>
+          </ul>
+        </div>
+        <div class="formula-card">
+          <h3>Prisma</h3>
+          <ul>
+            <li>L. Permukaan = (2 &times; L.Alas) + (K.Alas &times; t)</li>
+            <li>Volume = L.Alas &times; t</li>
+          </ul>
+        </div>
+        <div class="formula-card">
+          <h3>Limas</h3>
+          <ul>
+            <li>L. Permukaan = L.Alas + &Sigma;L.Sisi Tegak</li>
+            <li>Volume = 1/3 &times; L.Alas &times; t</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="studentName">Nama Lengkap Siswa:</label>
+        <input type="text" id="studentName" placeholder="Ketik nama lengkap Anda di sini..." autocomplete="off" />
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <span style="font-size: 0.88rem; color: var(--muted);">Waktu pengerjaan: <strong>30 Menit</strong> (5 poin/soal)</span>
+        <button class="btn" id="startBtn">Mulai Mengerjakan &rarr;</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: KUIS -->
+    <div class="content hidden" id="quizScreen">
+      <div class="quiz-meta">
+        <div class="tags-wrapper">
+          <span class="level-tag level-mudah" id="levelBadge">MUDAH</span>
+          <span class="topic-tag" id="questionTopic">Topik: Kubus</span>
+        </div>
+        <span style="font-weight: 600; font-size: 0.92rem;" id="questionCounter">Soal 1 dari 20</span>
+        <div class="timer-box" id="timerDisplay">30:00</div>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <div class="question-box">
+        <div class="question-text" id="questionText">Memuat soal...</div>
+        <div class="illustration-box" id="illustrationBox"></div>
+      </div>
+
+      <div class="options-list" id="optionsContainer"></div>
+
+      <div class="explanation-box" id="explanationBox">
+        <h4>Pembahasan Langkah demi Langkah:</h4>
+        <p id="explanationText"></p>
+      </div>
+
+      <div class="quiz-footer">
+        <div style="font-size: 0.9rem; color: var(--muted);">
+          Skor sementara: <strong id="liveScore" style="color: var(--primary);">0</strong> / 100
+        </div>
+        <button class="btn" id="nextBtn" disabled>Soal Berikutnya &rarr;</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 3: HASIL -->
+    <div class="content hidden" id="resultScreen">
+      <div class="result-header">
+        <div class="score-circle">
+          <span id="finalScore">0</span>
+          <small>NILAI AKHIR</small>
+        </div>
+        <h2 id="resultGreeting">Selesai!</h2>
+        <p id="resultSubtitle" style="color: var(--muted); font-size: 0.95rem; margin-top: 4px;"></p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <strong id="correctCount" style="color: var(--success);">0</strong>
+          <span>Jawaban Benar</span>
+        </div>
+        <div class="stat-card">
+          <strong id="wrongCount" style="color: var(--danger);">0</strong>
+          <span>Jawaban Salah</span>
+        </div>
+        <div class="stat-card">
+          <strong id="timeTaken">00:00</strong>
+          <span>Waktu Pengerjaan</span>
+        </div>
+      </div>
+
+      <h3 style="font-size: 1.05rem; margin-bottom: 8px;">Rekap & Pembahasan 20 Soal</h3>
+      <div class="review-list" id="reviewList"></div>
+
+      <div style="margin-top: 22px; display: flex; justify-content: center;">
+        <button class="btn" id="restartBtn">&#8635; Ulangi Kuis</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Ilustrasi SVG Bangun Ruang Sisi Tegak
+    const svgs = {
+      kubus: (label) => `
+        <svg width="150" height="135" viewBox="0 0 150 135">
+          <rect x="30" y="42" width="68" height="68" fill="#eff6ff" stroke="#1e40af" stroke-width="2"/>
+          <polygon points="30,42 56,20 124,20 98,42" fill="#dbeafe" stroke="#1e40af" stroke-width="2"/>
+          <polygon points="98,42 124,20 124,88 98,110" fill="#bfdbfe" stroke="#1e40af" stroke-width="2"/>
+          <line x1="56" y1="20" x2="56" y2="88" stroke="#1e40af" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <line x1="30" y1="110" x2="56" y2="88" stroke="#1e40af" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <line x1="56" y1="88" x2="124" y2="88" stroke="#1e40af" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <text x="48" y="125" font-size="11" font-weight="bold" fill="#b91c1c">${label}</text>
+        </svg>`,
+      balok: (p, l, t) => `
+        <svg width="165" height="135" viewBox="0 0 165 135">
+          <rect x="22" y="48" width="90" height="58" fill="#eff6ff" stroke="#1e40af" stroke-width="2"/>
+          <polygon points="22,48 48,25 138,25 112,48" fill="#dbeafe" stroke="#1e40af" stroke-width="2"/>
+          <polygon points="112,48 138,25 138,83 112,106" fill="#bfdbfe" stroke="#1e40af" stroke-width="2"/>
+          <text x="50" y="120" font-size="10" font-weight="bold" fill="#b91c1c">${p}</text>
+          <text x="122" y="102" font-size="10" font-weight="bold" fill="#0f172a">${l}</text>
+          <text x="141" y="60" font-size="10" font-weight="bold" fill="#1e40af">${t}</text>
+        </svg>`,
+      prismaSegitiga: (alas, tSeg, tPrisma) => `
+        <svg width="160" height="135" viewBox="0 0 160 135">
+          <polygon points="35,42 95,42 65,16" fill="#dbeafe" stroke="#1e40af" stroke-width="2"/>
+          <polygon points="35,42 95,42 95,108 35,108" fill="#eff6ff" stroke="#1e40af" stroke-width="2"/>
+          <polygon points="35,108 95,108 65,82" fill="none" stroke="#1e40af" stroke-width="1.3" stroke-dasharray="3 3"/>
+          <line x1="65" y1="16" x2="65" y2="82" stroke="#1e40af" stroke-width="1.3" stroke-dasharray="3 3"/>
+          <text x="52" y="122" font-size="10" font-weight="bold" fill="#b91c1c">${alas}</text>
+          <text x="72" y="34" font-size="10" font-weight="bold" fill="#0f172a">${tSeg}</text>
+          <text x="100" y="78" font-size="10" font-weight="bold" fill="#1e40af">${tPrisma}</text>
+        </svg>`,
+      limasSegiempat: (sisi, tinggi) => `
+        <svg width="160" height="135" viewBox="0 0 160 135">
+          <polygon points="28,108 102,108 126,84 52,84" fill="#dbeafe" stroke="#1e40af" stroke-width="1.8"/>
+          <line x1="77" y1="20" x2="28" y2="108" stroke="#1e40af" stroke-width="2"/>
+          <line x1="77" y1="20" x2="102" y2="108" stroke="#1e40af" stroke-width="2"/>
+          <line x1="77" y1="20" x2="126" y2="84" stroke="#1e40af" stroke-width="2"/>
+          <line x1="77" y1="20" x2="52" y2="84" stroke="#1e40af" stroke-width="1.3" stroke-dasharray="3 3"/>
+          <line x1="77" y1="20" x2="77" y2="96" stroke="#b91c1c" stroke-width="1.5" stroke-dasharray="3 2"/>
+          <text x="50" y="122" font-size="10" font-weight="bold" fill="#0f172a">${sisi}</text>
+          <text x="81" y="66" font-size="10" font-weight="bold" fill="#b91c1c">${tinggi}</text>
+        </svg>`,
+      gabungan: () => `
+        <svg width="160" height="140" viewBox="0 0 160 140">
+          <rect x="42" y="65" width="64" height="58" fill="#eff6ff" stroke="#1e40af" stroke-width="2"/>
+          <polygon points="106,65 126,48 126,106 106,123" fill="#bfdbfe" stroke="#1e40af" stroke-width="2"/>
+          <polygon points="74,16 42,65 106,65" fill="#dbeafe" stroke="#1e40af" stroke-width="2"/>
+          <polygon points="74,16 106,65 126,48" fill="#93c5fd" stroke="#1e40af" stroke-width="2"/>
+          <text x="56" y="135" font-size="10" font-weight="bold" fill="#b91c1c">s = 12 cm</text>
+          <text x="86" y="42" font-size="10" font-weight="bold" fill="#0f172a">t=8 cm</text>
+        </svg>`
+    };
+
+    // 20 Soal Lengkap: 5 Mudah, 10 Sedang, 3 Kontekstual, 2 HOTS
+    const questions = [
+      // === 5 SOAL MUDAH ===
+      {
+        level: "Mudah",
+        levelClass: "level-mudah",
+        topic: "Kubus",
+        question: "Sebuah kubus memiliki panjang rusuk 8 cm. Berapakah volume kubus tersebut?",
+        svg: svgs.kubus("s = 8 cm"),
+        options: ["64 cm³", "384 cm³", "512 cm³", "96 cm³"],
+        answer: 2,
+        explanation: "Volume kubus = s³ = 8 × 8 × 8 = 512 cm³."
+      },
+      {
+        level: "Mudah",
+        levelClass: "level-mudah",
+        topic: "Kubus",
+        question: "Luas permukaan sebuah kubus yang memiliki panjang rusuk 5 cm adalah...",
+        svg: svgs.kubus("s = 5 cm"),
+        options: ["125 cm²", "150 cm²", "100 cm²", "60 cm²"],
+        answer: 1,
+        explanation: "Kubus memiliki 6 sisi persegi yang kongruen. Luas permukaan = 6 × s² = 6 × 5² = 6 × 25 = 150 cm²."
+      },
+      {
+        level: "Mudah",
+        levelClass: "level-mudah",
+        topic: "Balok",
+        question: "Sebuah balok berukuran panjang 10 cm, lebar 6 cm, dan tinggi 4 cm. Volume balok tersebut adalah...",
+        svg: svgs.balok("p=10", "l=6", "t=4"),
+        options: ["240 cm³", "248 cm³", "120 cm³", "80 cm³"],
+        answer: 0,
+        explanation: "Volume balok = p × l × t = 10 × 6 × 4 = 240 cm³."
+      },
+      {
+        level: "Mudah",
+        levelClass: "level-mudah",
+        topic: "Prisma",
+        question: "Diketahui sebuah prisma tegak memiliki luas alas 36 cm² dan tinggi 12 cm. Volume prisma tersebut adalah...",
+        svg: svgs.prismaSegitiga("L = 36", "", "t = 12"),
+        options: ["144 cm³", "432 cm³", "216 cm³", "48 cm³"],
+        answer: 1,
+        explanation: "Volume prisma = Luas alas × tinggi = 36 × 12 = 432 cm³."
+      },
+      {
+        level: "Mudah",
+        levelClass: "level-mudah",
+        topic: "Limas",
+        question: "Sebuah limas segi empat memiliki luas alas 45 cm² dan tinggi 10 cm. Berapakah volume limas tersebut?",
+        svg: svgs.limasSegiempat("L = 45", "t = 10"),
+        options: ["450 cm³", "225 cm³", "150 cm³", "135 cm³"],
+        answer: 2,
+        explanation: "Volume limas = 1/3 × Luas alas × tinggi = 1/3 × 45 × 10 = 15 × 10 = 150 cm³."
+      },
+
+      // === 10 SOAL SEDANG ===
+      {
+        level: "Sedang",
+        levelClass: "level-sedang",
+        topic: "Kubus",
+        question: "Jika luas permukaan sebuah kubus adalah 294 cm², maka panjang rusuk kubus tersebut adalah...",
+        svg: svgs.kubus("L = 294 cm²"),
+        options: ["6 cm", "7 cm", "8 cm", "9 cm"],
+        answer: 1,
+        explanation: "L = 6s² → 294 = 6s² → s² = 294 / 6 = 49 → s = √49 = 7 cm."
+      },
+      {
+        level: "Sedang",
+        levelClass: "level-sedang",
+        topic: "Balok",
+        question: "Sebuah balok memiliki panjang 12 cm, lebar 8 cm, dan tinggi 5 cm. Berapakah luas permukaan balok tersebut?",
+        svg: svgs.balok("p=12", "l=8", "t=5"),
+        options: ["480 cm²", "392 cm²", "196 cm²", "352 cm²"],
+        answer: 1,
+        explanation: "L = 2(pl + pt + lt) = 2((12×8) + (12×5) + (8×5)) = 2(96 + 60 + 40) = 2(196) = 392 cm²."
+      },
+      {
+        level: "Sedang",
+        levelClass: "level-sedang",
+        topic: "Balok",
+        question: "Volume sebuah balok adalah 720 cm³. Jika panjangnya 15 cm dan lebarnya 8 cm, berapakah tinggi balok tersebut?",
+        svg: svgs.balok("p=15", "l=8", "t=?"),
+        options: ["5 cm", "6 cm", "8 cm", "9 cm"],
+        answer: 1,
+        explanation: "V = p × l × t → 720 = 15 × 8 × t → 720 = 120t → t = 720 / 120 = 6 cm."
+      },
+      {
+        level: "Sedang",
+        levelClass: "level-sedang",
+        topic: "Kerangka Bangun Ruang",
+        question: "Budi memiliki kawat sepanjang 2 meter untuk membuat kerangka balok berukuran 18 cm × 12 cm × 10 cm. Sisa kawat yang tidak terpakai adalah...",
+        svg: svgs.balok("18 cm", "12 cm", "10 cm"),
+        options: ["40 cm", "20 cm", "160 cm", "50 cm"],
+        answer: 0,
+        explanation: "Panjang kawat 1 balok = 4(p + l + t) = 4(18 + 12 + 10) = 4(40) = 160 cm. Kawat tersedia = 2 m = 200 cm. Sisa = 200 - 160 = 40 cm."
+      },
+      {
+        level: "Sedang",
+        levelClass: "level-sedang",
+        topic: "Prisma Segitiga",
+        question: "Alas sebuah prisma berbentuk segitiga siku-siku dengan panjang sisi siku-sikunya 6 cm dan 8 cm. Jika tinggi prisma 15 cm, volume prisma tersebut adalah...",
+        svg: svgs.prismaSegitiga("a=6", "t=8", "T=15"),
+        options: ["720 cm³", "360 cm³", "180 cm³", "240 cm³"],
+        answer: 1,
+        explanation: "Luas alas segitiga = 1/2 × 6 × 8 = 24 cm². Volume prisma = L.alas × T = 24 × 15 = 360 cm³."
+      },
+      {
+        level: "Sedang",
+        levelClass: "level-sedang",
+        topic: "Prisma Segitiga",
+        question: "Sebuah prisma tegak alasnya berbentuk segitiga siku-siku dengan sisi 3 cm, 4 cm, dan 5 cm. Jika tinggi prisma 10 cm, berapakah luas permukaan prisma tersebut?",
+        svg: svgs.prismaSegitiga("3, 4, 5", "", "T=10"),
+        options: ["120 cm²", "132 cm²", "126 cm²", "60 cm²"],
+        answer: 1,
+        explanation: "L.alas = 1/2 × 3 × 4 = 6 cm². Keliling alas = 3 + 4 + 5 = 12 cm. L.permukaan = (2 × L.alas) + (K.alas × T) = (2 × 6) + (12 × 10) = 12 + 120 = 132 cm²."
+      },
+      {
+        level: "Sedang",
+        levelClass: "level-sedang",
+        topic: "Prisma Belah Ketupat",
+        question: "Alas sebuah prisma berbentuk belah ketupat dengan panjang diagonal 10 cm dan 24 cm. Jika tinggi prisma 14 cm, volume prisma adalah...",
+        svg: svgs.prismaSegitiga("d1=10, d2=24", "", "T=14"),
+        options: ["3.360 cm³", "1.680 cm³", "840 cm³", "1.440 cm³"],
+        answer: 1,
+        explanation: "L.alas belah ketupat = (d1 × d2) / 2 = (10 × 24) / 2 = 120 cm². Volume = 120 × 14 = 1.680 cm³."
+      },
+      {
+        level: "Sedang",
+        levelClass: "level-sedang",
+        topic: "Limas Segi Empat",
+        question: "Alas sebuah limas berbentuk persegi dengan panjang sisi 12 cm. Jika tinggi limas 8 cm, berapakah luas permukaan limas tersebut?",
+        svg: svgs.limasSegiempat("s = 12 cm", "t = 8 cm"),
+        options: ["384 cm²", "336 cm²", "240 cm²", "528 cm²"],
+        answer: 0,
+        explanation: "Setengah sisi alas = 12/2 = 6 cm. Tinggi segitiga tegak (Pythagoras) = √(8² + 6²) = √100 = 10 cm. L.alas = 12×12 = 144 cm². Luas 4 segitiga = 4 × (1/2 × 12 × 10) = 240 cm². Total = 144 + 240 = 384 cm²."
+      },
+      {
+        level: "Sedang",
+        levelClass: "level-sedang",
+        topic: "Limas Segi Empat",
+        question: "Volume sebuah limas yang alasnya berbentuk persegi adalah 400 cm³. Jika tinggi limas 12 cm, maka panjang rusuk alas limas tersebut adalah...",
+        svg: svgs.limasSegiempat("s = ?", "t = 12 cm"),
+        options: ["8 cm", "10 cm", "12 cm", "15 cm"],
+        answer: 1,
+        explanation: "V = 1/3 × s² × t → 400 = 1/3 × s² × 12 → 400 = 4s² → s² = 100 → s = 10 cm."
+      },
+      {
+        level: "Sedang",
+        levelClass: "level-sedang",
+        topic: "Bangun Ruang Gabungan",
+        question: "Sebuah bangun ruang terdiri atas kubus dengan rusuk 12 cm dan limas segi empat di atasnya dengan tinggi limas 8 cm. Volume gabungan bangun tersebut adalah...",
+        svg: svgs.gabungan(),
+        options: ["2.112 cm³", "1.728 cm³", "2.880 cm³", "1.920 cm³"],
+        answer: 0,
+        explanation: "V kubus = 12³ = 1.728 cm³. V limas = 1/3 × 12² × 8 = 1/3 × 144 × 8 = 384 cm³. Volume gabungan = 1.728 + 384 = 2.112 cm³."
+      },
+
+      // === 3 SOAL KONTEKSTUAL ===
+      {
+        level: "Kontekstual",
+        levelClass: "level-kontekstual",
+        topic: "Aplikasi Balok (Debit Air)",
+        question: "Sebuah bak mandi berbentuk balok memiliki ukuran bagian dalam panjang 120 cm, lebar 80 cm, dan tinggi 75 cm. Bak tersebut akan diisi air menggunakan keran dengan debit 12 liter/menit. Waktu yang diperlukan untuk mengisi bak hingga penuh adalah...",
+        svg: svgs.balok("120 cm", "80 cm", "75 cm"),
+        options: ["45 menit", "60 menit", "72 menit", "90 menit"],
+        answer: 1,
+        explanation: "Volume bak = 120 × 80 × 75 = 720.000 cm³ = 720 dm³ = 720 liter. Waktu = Volume / Debit = 720 / 12 = 60 menit."
+      },
+      {
+        level: "Kontekstual",
+        levelClass: "level-kontekstual",
+        topic: "Aplikasi Prisma (Tenda)",
+        question: "Sebuah tenda pramuka berbentuk prisma segitiga sama kaki dengan lebar alas 2 m, tinggi tenda 1,5 m, dan panjang tenda 3 m. Jika sisi miring atap tenda berukuran 1,8 m, luas kain parasut minimal yang dibutuhkan (termasuk alas tenda) adalah...",
+        svg: svgs.prismaSegitiga("a=2m", "t=1,5m", "P=3m"),
+        options: ["19,8 m²", "16,8 m²", "13,8 m²", "22,8 m²"],
+        answer: 0,
+        explanation: "Luas 2 segitiga depan-belakang = 2 × (1/2 × 2 × 1,5) = 3 m². Luas alas persegi panjang = 2 × 3 = 6 m². Luas 2 sisi miring atap = 2 × (1,8 × 3) = 10,8 m². Total kain = 3 + 6 + 10,8 = 19,8 m²."
+      },
+      {
+        level: "Kontekstual",
+        levelClass: "level-kontekstual",
+        topic: "Aplikasi Limas (Atap Gazebo)",
+        question: "Atap sebuah gazebo berbentuk limas persegi tanpa alas dengan panjang sisi 4 m dan tinggi atap 1,5 m. Jika pemilik ingin memasang genteng dengan biaya Rp120.000,00 per m², total biaya pemasangan genteng adalah...",
+        svg: svgs.limasSegiempat("s = 4 m", "t = 1,5 m"),
+        options: ["Rp2.400.000,00", "Rp1.920.000,00", "Rp2.880.000,00", "Rp3.840.000,00"],
+        answer: 0,
+        explanation: "Setengah sisi = 4/2 = 2 m. Tinggi segitiga sisi tegak = √(1,5² + 2²) = √(2,25 + 4) = √6,25 = 2,5 m. Luas 4 segitiga atap = 4 × (1/2 × 4 × 2,5) = 20 m². Biaya = 20 × Rp120.000 = Rp2.400.000,00."
+      },
+
+      // === 2 SOAL HOTS ===
+      {
+        level: "HOTS",
+        levelClass: "level-hots",
+        topic: "Penalaran Perbandingan & Perubahan Ukuran",
+        question: "Sebuah balok memiliki volume V. Jika panjang balok diperbesar menjadi 2 kali semula, lebarnya diperbesar menjadi 1,5 kali semula, dan tingginya diperkecil menjadi 2/3 kali semula, maka perbandingan volume balok awal dengan volume balok setelah diubah adalah...",
+        svg: svgs.balok("2p", "1,5l", "2/3 t"),
+        options: ["1 : 2", "2 : 3", "3 : 4", "1 : 3"],
+        answer: 0,
+        explanation: "V awal = p × l × t. V baru = (2p) × (1,5l) × (2/3 t) = (2 × 3/2 × 2/3) × (p × l × t) = 2 × V awal. Jadi perbandingan V awal : V baru = 1 : 2."
+      },
+      {
+        level: "HOTS",
+        levelClass: "level-hots",
+        topic: "Penalaran Ketinggian Air & Benda Masuk",
+        question: "Sebuah akuarium berbentuk balok berukuran 50 cm × 30 cm × 40 cm berisi air setinggi 25 cm. Ke dalam akuarium tersebut dimasukkan 3 buah hiasan kubus pejal berukuran rusuk 10 cm hingga seluruhnya tenggelam. Ketinggian air di dalam akuarium sekarang adalah...",
+        svg: svgs.balok("50 cm", "30 cm", "t air = 25"),
+        options: ["26 cm", "27 cm", "28 cm", "30 cm"],
+        answer: 1,
+        explanation: "Volume 3 kubus = 3 × 10³ = 3.000 cm³. Kenaikan tinggi air (Δt) = Volume benda / Luas alas akuarium = 3.000 / (50 × 30) = 3.000 / 1.500 = 2 cm. Tinggi air sekarang = 25 + 2 = 27 cm."
+      }
+    ];
+
+    // State Kuis
+    let currentIdx = 0;
+    let score = 0;
+    let studentName = "";
+    let userAnswers = [];
+    let timerInterval = null;
+    const TOTAL_TIME = 30 * 60; // 30 menit
+    let timeRemaining = TOTAL_TIME;
+
+    // Elemen DOM
+    const startScreen = document.getElementById("startScreen");
+    const quizScreen = document.getElementById("quizScreen");
+    const resultScreen = document.getElementById("resultScreen");
+    const studentNameInput = document.getElementById("studentName");
+    const startBtn = document.getElementById("startBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const restartBtn = document.getElementById("restartBtn");
+
+    startBtn.addEventListener("click", () => {
+      studentName = studentNameInput.value.trim() || "Siswa Kelas 9";
+      startScreen.classList.add("hidden");
+      quizScreen.classList.remove("hidden");
+      document.getElementById("headerBadge").textContent = `Peserta: ${studentName}`;
+
+      currentIdx = 0;
+      score = 0;
+      userAnswers = [];
+      timeRemaining = TOTAL_TIME;
+      document.getElementById("liveScore").textContent = "0";
+
+      startTimer();
+      renderQuestion();
+    });
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      updateTimerUI();
+      timerInterval = setInterval(() => {
+        timeRemaining--;
+        updateTimerUI();
+        if (timeRemaining <= 0) {
+          clearInterval(timerInterval);
+          finishQuiz();
+        }
+      }, 1000);
+    }
+
+    function updateTimerUI() {
+      const mins = String(Math.floor(timeRemaining / 60)).padStart(2, "0");
+      const secs = String(timeRemaining % 60).padStart(2, "0");
+      const timerEl = document.getElementById("timerDisplay");
+      timerEl.textContent = `${mins}:${secs}`;
+      if (timeRemaining <= 180) {
+        timerEl.classList.add("warning");
+      } else {
+        timerEl.classList.remove("warning");
+      }
+    }
+
+    function renderQuestion() {
+      const q = questions[currentIdx];
+      const levelBadge = document.getElementById("levelBadge");
+      levelBadge.textContent = q.level;
+      levelBadge.className = `level-tag ${q.levelClass}`;
+
+      document.getElementById("questionTopic").textContent = `Topik: ${q.topic}`;
+      document.getElementById("questionCounter").textContent = `Soal ${currentIdx + 1} dari ${questions.length}`;
+      document.getElementById("progressFill").style.width = `${(currentIdx / questions.length) * 100}%`;
+      document.getElementById("questionText").textContent = `${currentIdx + 1}. ${q.question}`;
+      document.getElementById("illustrationBox").innerHTML = q.svg;
+
+      const optionsContainer = document.getElementById("optionsContainer");
+      optionsContainer.innerHTML = "";
+
+      const letters = ["A", "B", "C", "D"];
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerHTML = `<span class="option-letter">${letters[idx]}</span><span>${opt}</span>`;
+        btn.addEventListener("click", () => selectOption(idx));
+        optionsContainer.appendChild(btn);
+      });
+
+      document.getElementById("explanationBox").style.display = "none";
+      nextBtn.disabled = true;
+      nextBtn.textContent = currentIdx === questions.length - 1 ? "Selesai & Lihat Nilai ✓" : "Soal Berikutnya →";
+    }
+
+    function selectOption(selectedIndex) {
+      const q = questions[currentIdx];
+      const optionButtons = document.querySelectorAll(".option-btn");
+      const isCorrect = selectedIndex === q.answer;
+
+      optionButtons.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (idx === q.answer) {
+          btn.classList.add("correct");
+        } else if (idx === selectedIndex && !isCorrect) {
+          btn.classList.add("wrong");
+        }
+      });
+
+      if (isCorrect) {
+        score += 5; // 20 soal x 5 poin = 100
+        document.getElementById("liveScore").textContent = score;
+      }
+
+      userAnswers.push({
+        level: q.level,
+        question: q.question,
+        selected: q.options[selectedIndex],
+        correct: q.options[q.answer],
+        isCorrect: isCorrect,
+        explanation: q.explanation
+      });
+
+      document.getElementById("explanationText").textContent = q.explanation;
+      document.getElementById("explanationBox").style.display = "block";
+      document.getElementById("progressFill").style.width = `${((currentIdx + 1) / questions.length) * 100}%`;
+      nextBtn.disabled = false;
+    }
+
+    nextBtn.addEventListener("click", () => {
+      if (currentIdx < questions.length - 1) {
+        currentIdx++;
+        renderQuestion();
+      } else {
+        finishQuiz();
+      }
+    });
+
+    function finishQuiz() {
+      clearInterval(timerInterval);
+      quizScreen.classList.add("hidden");
+      resultScreen.classList.remove("hidden");
+
+      const correctTotal = userAnswers.filter(a => a.isCorrect).length;
+      const wrongTotal = questions.length - correctTotal;
+      const elapsed = TOTAL_TIME - timeRemaining;
+      const mins = String(Math.floor(elapsed / 60)).padStart(2, "0");
+      const secs = String(elapsed % 60).padStart(2, "0");
+
+      document.getElementById("finalScore").textContent = score;
+      document.getElementById("correctCount").textContent = `${correctTotal} / 20`;
+      document.getElementById("wrongCount").textContent = wrongTotal;
+      document.getElementById("timeTaken").textContent = `${mins}:${secs}`;
+
+      let predicate = "";
+      if (score >= 90) predicate = `Sangat Memuaskan, ${studentName}! Kamu menguasai soal dasar hingga HOTS.`;
+      else if (score >= 75) predicate = `Bagus Sekali, ${studentName}! Pemahaman konsep Bangun Ruang Sisi Tegak sudah baik.`;
+      else if (score >= 60) predicate = `Cukup Baik, ${studentName}. Pelajari kembali pembahasan soal yang masih keliru.`;
+      else predicate = `Tetap Semangat, ${studentName}! Mari ulas kembali rumus dan langkah pengerjaannya.`;
+
+      document.getElementById("resultGreeting").textContent = score >= 75 ? "Selamat!" : "Kuis Selesai!";
+      document.getElementById("resultSubtitle").textContent = predicate;
+
+      const reviewList = document.getElementById("reviewList");
+      reviewList.innerHTML = "";
+
+      questions.forEach((q, idx) => {
+        const ans = userAnswers[idx];
+        const statusClass = ans && ans.isCorrect ? "is-correct" : "is-wrong";
+        const userAnsText = ans ? ans.selected : "Tidak dijawab (Waktu habis)";
+
+        const item = document.createElement("div");
+        item.className = `review-item ${statusClass}`;
+        item.innerHTML = `
+          <div style="margin-bottom: 6px;">
+            <span class="level-tag ${q.levelClass}" style="font-size: 0.7rem; padding: 3px 8px; margin-right: 6px;">${q.level}</span>
+            <strong>${idx + 1}. ${q.question}</strong>
+          </div>
+          <div style="font-size: 0.85rem; margin-bottom: 4px;">
+            Jawaban Anda: <strong style="color: ${ans && ans.isCorrect ? 'var(--success)' : 'var(--danger)'}">${userAnsText}</strong>
+            ${(!ans || !ans.isCorrect) ? ` | Kunci: <strong style="color: var(--success)">${q.options[q.answer]}</strong>` : ''}
+          </div>
+          <div style="font-size: 0.84rem; color: var(--muted); background: #f8fafc; padding: 8px; border-radius: 8px; margin-top: 6px;">
+            <strong>Pembahasan:</strong> ${q.explanation}
+          </div>
+        `;
+        reviewList.appendChild(item);
+      });
+    }
+
+    restartBtn.addEventListener("click", () => {
+      resultScreen.classList.add("hidden");
+      startScreen.classList.remove("hidden");
+      document.getElementById("headerBadge").textContent = "20 Soal Evaluasi";
+    });
+  </script>
+</body>
+</html>
