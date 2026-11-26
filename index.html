@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kuis Matematika Kelas 9: Bangun Ruang Sisi Tegak (BRST)</title>
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-light: #3b82f6;
+      --secondary: #0f172a;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --success: #15803d;
+      --success-bg: #dcfce7;
+      --danger: #b91c1c;
+      --danger-bg: #fee2e2;
+      --border: #e2e8f0;
+      --easy-bg: #dcfce7;
+      --easy-text: #166534;
+      --med-bg: #fef9c3;
+      --med-text: #854d0e;
+      --ctx-bg: #e0f2fe;
+      --ctx-text: #075985;
+      --hots-bg: #f3e8ff;
+      --hots-text: #6b21a8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #dbeafe 0%, #f8fafc 50%, #e0e7ff 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 24px 16px;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 860px;
+      background: var(--card);
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .header {
+      background: linear-gradient(120deg, var(--primary), var(--primary-light));
+      color: white;
+      padding: 24px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .header h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .header p {
+      font-size: 0.88rem;
+      opacity: 0.92;
+      margin-top: 4px;
+    }
+
+    .badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .content {
+      padding: 28px;
+    }
+
+    /* Layar Awal */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+      margin: 16px 0 22px;
+    }
+
+    .info-box {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      background: #f8fafc;
+      text-align: center;
+    }
+
+    .info-box strong {
+      display: block;
+      font-size: 1.25rem;
+      color: var(--primary);
+    }
+
+    .info-box span {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .formula-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .formula-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .formula-card h3 {
+      color: var(--primary);
+      font-size: 0.96rem;
+      margin-bottom: 6px;
+    }
+
+    .formula-card ul {
+      list-style: none;
+      font-size: 0.82rem;
+      line-height: 1.65;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .input-group label {
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+
+    .input-group input {
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .input-group input:focus {
+      border-color: var(--primary);
+    }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 13px 24px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Layar Kuis */
+    .quiz-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tags-wrapper {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .topic-tag {
+      background: #e2e8f0;
+      color: #1e293b;
+      font-weight: 600;
+      font-size: 0.8rem;
+      padding: 5px 12px;
+      border-radius: 8px;
+    }
+
+    .level-tag {
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 5px 12px;
+      border-radius: 8px;
+      text-transform: uppercase;
+    }
+
+    .level-mudah { background: var(--easy-bg); color: var(--easy-text); }
+    .level-sedang { background: var(--med-bg); color: var(--med-text); }
+    .level-kontekstual { background: var(--ctx-bg); color: var(--ctx-text); }
+    .level-hots { background: var(--hots-bg); color: var(--hots-text); }
+
+    .timer-box {
+      font-weight: 700;
+      font-size: 0.95rem;
+      background: #f1f5f9;
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .timer-box.warning {
+      color: var(--danger);
+      background: var(--danger-bg);
+      border-color: #fca5a5;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .question-box {
+      display: grid;
+      grid-template-columns: 1fr 210px;
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 680px) {
+      .question-box {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .question-text {
+      font-size: 1.05rem;
+      line-height: 1.65;
+      font-weight: 600;
+      color: var(--secondary);
+    }
+
+    .illustration-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      background: #ffffff;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 13px 16px;
+      font-size: 0.96rem;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--primary-light);
+      background: #f8fafc;
+    }
+
+    .option-letter {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      color: var(--secondary);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .option-btn.correct {
+      border-color: var(--success);
+      background: var(--success-bg);
+      color: #14532d;
+    }
+
+    .option-btn.correct .option-letter {
+      background: var(--success);
+      color: white;
+    }
+
+    .option-btn.wrong {
+      border-color: var(--danger);
+      background: var(--danger-bg);
+      color: #7f1d1d;
+    }
+
+    .option-btn.wrong .option-letter {
+      background: var(--danger);
+      color: white;
+    }
+
+    .explanation-box {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 12px;
+      background: #eff6ff;
+      border-left: 4px solid var(--primary);
+      font-size: 0.92rem;
+      line-height: 1.6;
+      display: none;
+    }
+
+    .explanation-box h4 {
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .quiz-footer {
+      margin-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-
